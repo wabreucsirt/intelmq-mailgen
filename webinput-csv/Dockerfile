@@ -2,7 +2,7 @@ FROM ubuntu:22.04
 
 ARG REVISION
 
-ENV REVISION ${REVISION}
+ENV REVISION=${REVISION}
 
 COPY common/setup-apt.sh /opt/
 RUN /opt/setup-apt.sh node

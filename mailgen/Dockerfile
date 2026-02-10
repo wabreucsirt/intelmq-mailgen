@@ -2,7 +2,7 @@ FROM ubuntu:22.04
 
 ARG INTELMQ_MAILGEN_REVISION
 
-ENV INTELMQ_MAILGEN_REVISION ${INTELMQ_MAILGEN_REVISION}
+ENV INTELMQ_MAILGEN_REVISION=${INTELMQ_MAILGEN_REVISION}
 
 # Install git to be able to clone the mailgen repo
 RUN apt-get update && DEBIAN_FRONTEND="noninteractive" apt-get install -y git \

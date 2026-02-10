@@ -3,8 +3,8 @@ FROM ubuntu:22.04
 ARG REVISION
 ARG INTELMQ_MAILGEN_REVISION
 
-ENV REVISION ${REVISION}
-ENV INTELMQ_MAILGEN_REVISION ${INTELMQ_MAILGEN_REVISION}
+ENV REVISION=${REVISION}
+ENV INTELMQ_MAILGEN_REVISION=${INTELMQ_MAILGEN_REVISION}
 
 # Install dependencies and stuff
 RUN apt-get update && DEBIAN_FRONTEND="noninteractive" apt-get install -y git python3-pip python3-psycopg2 python3-dateutil libgpgme-dev sqlite3 python3-gpg python3-jsonschema
@@ -27,7 +27,7 @@ RUN git clone https://github.com/Intevation/intelmq-fody-backend.git
 
 RUN cd intelmq-fody-backend && git checkout $REVISION
 
-ENV FODY_SESSION_CONFIG /etc/intelmq/fody-session.conf
+ENV FODY_SESSION_CONFIG=/etc/intelmq/fody-session.conf
 
 COPY fody-backend/conf/fody-session.conf /etc/intelmq/fody-session.conf
 

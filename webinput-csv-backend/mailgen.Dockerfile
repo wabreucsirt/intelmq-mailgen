@@ -8,11 +8,11 @@ ARG INTELMQ_MANAGER_REVISION
 ARG INTELMQ_CERTBUND_CONTACT_REVISION
 ARG INTELMQ_MAILGEN_REVISION
 
-ENV INTELMQ_REVISION ${INTELMQ_REVISION}
-ENV INTELMQ_API_REVISION ${INTELMQ_API_REVISION}
-ENV INTELMQ_MANAGER_REVISION ${INTELMQ_MANAGER_REVISION}
-ENV INTELMQ_CERTBUND_CONTACT_REVISION ${INTELMQ_CERTBUND_CONTACT_REVISION}
-ENV INTELMQ_MAILGEN_REVISION ${INTELMQ_MAILGEN_REVISION}
+ENV INTELMQ_REVISION=${INTELMQ_REVISION}
+ENV INTELMQ_API_REVISION=${INTELMQ_API_REVISION}
+ENV INTELMQ_MANAGER_REVISION=${INTELMQ_MANAGER_REVISION}
+ENV INTELMQ_CERTBUND_CONTACT_REVISION=${INTELMQ_CERTBUND_CONTACT_REVISION}
+ENV INTELMQ_MAILGEN_REVISION=${INTELMQ_MAILGEN_REVISION}
 
 COPY common/setup-apt.sh /opt/
 RUN apt-get update && DEBIAN_FRONTEND="noninteractive" apt-get install -y \
@@ -122,7 +122,7 @@ RUN chmod +x /opt/startup.sh
 
 ARG INTELMQ_MAILGEN_REVISION
 
-ENV INTELMQ_MAILGEN_REVISION ${INTELMQ_MAILGEN_REVISION}
+ENV INTELMQ_MAILGEN_REVISION=${INTELMQ_MAILGEN_REVISION}
 
 # Install git to be able to clone the mailgen repo
 RUN apt-get update && DEBIAN_FRONTEND="noninteractive" apt-get install -y git \
@@ -166,13 +166,14 @@ RUN git clone https://github.com/Intevation/intelmq-webinput-csv.git
 
 RUN cd intelmq-webinput-csv && git checkout $SOURCE_WEBINPUT_CSV_REVISION
 
-ENV WEBINPUT_CSV_SESSION_CONFIG /etc/intelmq/webinput-session.conf
+ENV WEBINPUT_CSV_SESSION_CONFIG=/etc/intelmq/webinput-session.conf
 
 COPY webinput-csv-backend/webinput-session.conf /etc/intelmq/webinput-session.conf
 
-ENV WEBINPUT_CSV_CONFIG /etc/intelmq/webinput_csv.conf
+ENV WEBINPUT_CSV_CONFIG=/etc/intelmq/webinput_csv.conf
 
 COPY webinput-csv-backend/webinput_csv.conf /etc/intelmq/webinput_csv.conf
+#RUN sed -i 's#"prefix": ""#"prefix": "/intelmq-webinput/"#' /etc/intelmq/webinput_csv.conf
 
 RUN mkdir -p /opt/intelmq/etc
 

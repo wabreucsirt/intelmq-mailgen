@@ -3,8 +3,8 @@ FROM ubuntu:22.04
 ARG REVISION
 ARG INTELMQ_PYPI_VERSION
 
-ENV REVISION ${REVISION}
-ENV INTELMQ_PYPI_VERSION ${INTELMQ_PYPI_VERSION}
+ENV REVISION=${REVISION}
+ENV INTELMQ_PYPI_VERSION=${INTELMQ_PYPI_VERSION}
 
 # Install dependencies
 COPY common/setup-apt.sh /opt/
@@ -18,11 +18,11 @@ RUN git clone https://github.com/Intevation/intelmq-webinput-csv.git
 
 RUN cd intelmq-webinput-csv && git checkout $REVISION
 
-ENV WEBINPUT_CSV_SESSION_CONFIG /etc/intelmq/webinput-session.conf
+ENV WEBINPUT_CSV_SESSION_CONFIG=/etc/intelmq/webinput-session.conf
 
 COPY webinput-csv-backend/webinput-session.conf /etc/intelmq/webinput-session.conf
 
-ENV WEBINPUT_CSV_CONFIG /etc/intelmq/webinput_csv.conf
+ENV WEBINPUT_CSV_CONFIG=/etc/intelmq/webinput_csv.conf
 
 COPY webinput-csv-backend/webinput_csv.conf /etc/intelmq/webinput_csv.conf
 
