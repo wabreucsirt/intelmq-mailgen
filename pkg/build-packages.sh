@@ -54,6 +54,7 @@ pushd "$buildtmp"
 declare -A CO_VERSION
 CO_VERSION=(
   [intelmq]=${IMQ_BUILD_VERSION:-"develop"}
+  [intelmq-api]=${IMQ_BUILD_API_VERSION:-"develop"}
   [intelmq-manager]=${IMQ_BUILD_MANAGER_VERSION:-"develop"}
   [intelmq-fody]=${IMQ_BUILD_FODY_VERSION:-"master"}
   [intelmq-fody-backend]=${IMQ_BUILD_FODY_BACKEND_VERSION:-"master"}
@@ -61,9 +62,20 @@ CO_VERSION=(
   [intelmq-certbund-contact]=${IMQ_BUILD_CERTBUND_CONTACT_VERSION:-"master"}
   [intelmq-webinput-csv]=${IMQ_BUILD_WEBINPUT_CSV_VERSION:-"master"}
   )
+declare -A REPO_URLS
+REPO_URLS=(
+  [intelmq]="https://github.com/certtools/intelmq"
+  [intelmq-api]="https://github.com/certtools/intelmq-api"
+  [intelmq-manager]="https://github.com/certtools/intelmq-manager"
+  [intelmq-fody]="https://github.com/intevation/intelmq-fody"
+  [intelmq-fody-backend]="https://github.com/intevation/intelmq-fody-backend"
+  [intelmq-mailgen]="https://github.com/intevation/intelmq-mailgen"
+  [intelmq-certbund-contact]="https://github.com/intevation/intelmq-certbund-contact"
+  [intelmq-webinput-csv]="https://github.com/intevation/intelmq-webinput-csv"
+  )
 
 for repo in $IMQ_BUILD_PACKAGES ; do
-  git clone -n --no-single-branch "https://github.com/intevation/$repo"
+  git clone -n --no-single-branch "${REPO_URLS[$repo]}"
   git -C "$repo" checkout "${CO_VERSION[$repo]}"
 done
 

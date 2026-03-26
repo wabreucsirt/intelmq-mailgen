@@ -52,6 +52,7 @@ The script takes a couple of parameters given as environment variables.
 * IMQ_BUILD_RELEASE - Switch to build a release package (values are "yes" or "no")
 * IMQ_BUILD_DIR - Destination directory for the resulting logs and packages (will be prefixed with current $HOME)
 * IMQ_BUILD_VERSION - git refspec of IntelMQ to build. Default: develop
+* IMQ_BUILD_API_VERSION - git refspec of IntelMQ API to build. Default: develop
 * IMQ_BUILD_MANAGER_VERSION - git refspec of IntelMQ Manager to build. Default: develop
 * IMQ_BUILD_FODY_VERSION - git refspec of IntelMQ Fody to build. Default: master
 * IMQ_BUILD_FODY_BACKEND_VERSION - git refspec of IntelMQ Fody Backend to build. Default: master
