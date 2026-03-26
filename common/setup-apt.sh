@@ -40,7 +40,9 @@ elif [ "$1" == "intevation" ]; then
     wget -O /etc/apt/trusted.gpg.d/intevation.asc https://ssl.intevation.de/Intevation-Distribution-Key-2021.asc
 elif [ "$1" == "node" ]; then
     echo "deb [signed-by=/etc/apt/trusted.gpg.d/nodesource.asc] https://deb.nodesource.com/node_14.x ${VERSION_CODENAME} main" > /etc/apt/sources.list.d/nodesource.list
-    wget -O /etc/apt/trusted.gpg.d/nodesource.asc https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+    # The node 14 key is no longer available: https://github.com/nodesource/distributions/issues/1912
+    #wget -O /etc/apt/trusted.gpg.d/nodesource.asc https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+    curl -fsSL "https://pubkeys.intevation.de/pks/lookup?op=get&search=0x9fd3b784bc1c6fc31a8a0a1c1655a0ab68576280" | gpg --dearmor -o /usr/share/keyrings/nodesource.gpg
 elif [ "$1" == "local" ]; then
     DEBIAN_FRONTEND="noninteractive" apt-get install -y dpkg-dev
     # Add local file system repository and favor it over other sources
