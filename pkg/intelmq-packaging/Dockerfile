@@ -30,15 +30,10 @@ ENV LANG=en_US.UTF-8
 ENV LANGUAGE=en_US:en
 ENV LC_ALL=en_US.UTF-8
 
-RUN apt-get update
-
 COPY update-sources.sh /tmp/
 RUN /bin/bash /tmp/update-sources.sh
+
 RUN DEBIAN_FRONTEND=noninteractive \
-    DEBIAN_PRIORITY=critical \
-    LOGBUCH_BATCHMODE=yes \
-    LOGBUCH_HOST="IntelMQ Packaging Jammy Docker Image" \
-    EMAIL=dockerfile \
     apt-get update
 RUN DEBIAN_FRONTEND=noninteractive \
     DEBIAN_PRIORITY=critical \
