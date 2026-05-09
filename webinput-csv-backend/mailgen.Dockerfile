@@ -37,6 +37,9 @@ RUN useradd -d /opt/intelmq -U -s /bin/bash intelmq \
 RUN git config --global --add safe.directory /opt/intelmq_src
 RUN git checkout $INTELMQ_REVISION && pip3 install -e .
 
+# https://github.com/certtools/intelmq/issues/2695 Dependency link problem with ruamel.yaml
+RUN sed -i 's/ruamel\.yaml/ruamel_yaml/' /opt/intelmq_src/intelmq.egg-info/requires.txt
+
 WORKDIR /opt
 
 RUN git clone https://github.com/certtools/intelmq-api.git

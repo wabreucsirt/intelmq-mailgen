@@ -5,14 +5,15 @@ set -xeu -o pipefail
 ### ContactDB
 createdb --encoding=UTF8 --template=template0 contactdb
 
+psql -c "CREATE ROLE intelmq WITH login PASSWORD 'secret';"
+psql -c "CREATE ROLE fody WITH login PASSWORD 'secret';"
+
 if [ -f /opt/intelmq-certbund-contact/sql/initdb.sql ]; then
     psql -f /opt/intelmq-certbund-contact/sql/initdb.sql contactdb
 else
     psql -f /usr/share/intelmq-certbund-contact/sql/initdb.sql contactdb
 fi
 
-psql -c "CREATE ROLE intelmq WITH login PASSWORD 'secret';"
-psql -c "CREATE ROLE fody WITH login PASSWORD 'secret';"
 psql -c "GRANT SELECT ON ALL TABLES IN SCHEMA public TO intelmq;" contactdb
 psql -c "GRANT ALL ON ALL TABLES IN SCHEMA public TO fody;" contactdb
 psql -c "GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO fody;" contactdb
