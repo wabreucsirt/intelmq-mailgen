@@ -26,6 +26,7 @@ COPY mailgen/intelmq-mailgen-webinput.conf /etc/intelmq/intelmq-mailgen-webinput
 
 # Generate gpg key
 COPY mailgen/generate-pgp-key.sh /opt/
+RUN sed -i 's/\r$//' /opt/generate-pgp-key.sh && chmod +x /opt/generate-pgp-key.sh
 RUN mkdir -p /etc/intelmq/mailgen/
 RUN /opt/generate-pgp-key.sh
 

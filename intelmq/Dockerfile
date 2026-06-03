@@ -106,7 +106,7 @@ ADD intelmq/rules /opt/rules
 
 # Execute the setup script using the switch from above.
 COPY intelmq/setup-certbund.sh /opt/setup-certbund.sh
-RUN chmod +x setup-certbund.sh
+RUN sed -i 's/\r$//' /opt/setup-certbund.sh && chmod +x /opt/setup-certbund.sh
 RUN ./setup-certbund.sh /opt/intelmq/etc
 
 # Add test script
@@ -116,6 +116,6 @@ EXPOSE 80 81
 
 COPY intelmq/startup.sh /opt/startup.sh
 
-RUN chmod +x /opt/startup.sh
+RUN sed -i 's/\r$//' /opt/startup.sh && chmod +x /opt/startup.sh
 
 CMD ["/opt/startup.sh"]

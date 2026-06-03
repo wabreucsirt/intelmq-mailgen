@@ -19,5 +19,6 @@ WORKDIR /opt/dsmtpd
 RUN pip3 install --ignore-requires-python .
 
 COPY dsmtpd/run.sh /opt/
+RUN sed -i 's/\r$//' /opt/run.sh && chmod +x /opt/run.sh
 
 CMD ["/opt/run.sh"]

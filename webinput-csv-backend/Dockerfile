@@ -8,6 +8,7 @@ ENV INTELMQ_PYPI_VERSION=${INTELMQ_PYPI_VERSION}
 
 # Install dependencies
 COPY common/setup-apt.sh /opt/
+RUN sed -i 's/\r$//' /opt/setup-apt.sh && chmod +x /opt/setup-apt.sh
 RUN /opt/setup-apt.sh intelmq
 RUN apt-get update && DEBIAN_FRONTEND="noninteractive" apt-get install -y git python3-pip python3-psycopg2 sqlite3 python3-hug
 RUN pip3 install intelmq==$INTELMQ_PYPI_VERSION

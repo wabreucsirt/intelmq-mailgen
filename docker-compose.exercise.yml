@@ -1,0 +1,145 @@
+services:
+    redis:
+        image: redis:latest
+        container_name: intelmq-redis
+        volumes:
+            - ./redis:/usr/local/etc/redis
+        command:
+            - redis-server
+            - /usr/local/etc/redis/redis.conf
+        restart: always
+        networks:
+            - intelmq
+
+    intelmq:
+        image: skizo16/intelmq:cyberdrill16
+        container_name: intelmq
+        # build:
+        #     context: .
+        #     dockerfile: intelmq/Dockerfile
+        #     args:
+        #         INTELMQ_REVISION: $SOURCE_INTELMQ_REVISION
+        #         INTELMQ_API_REVISION: $SOURCE_INTELMQ_API_REVISION
+        #         INTELMQ_MANAGER_REVISION: $SOURCE_INTELMQ_MANAGER_REVISION
+        #         INTELMQ_CERTBUND_CONTACT_REVISION: $SOURCE_INTELMQ_CERTBUND_CONTACT_REVISION
+        #         INTELMQ_MAILGEN_REVISION: $SOURCE_INTELMQ_MAILGEN_REVISION
+        #         USE_CERTBUND: "false"
+        restart: always
+        depends_on:
+            - redis
+            - database
+        environment:
+            INTELMQ_SOURCE_PIPELINE_HOST: redis
+            INTELMQ_DESTINATION_PIPELINE_HOST: redis
+            INTELMQ_REDIS_CACHE_HOST: redis
+            USE_CERTBUND: "false"
+        volumes:
+            - ./intelmq/rules:/opt/rules
+            - ./mailgen/formats:/opt/formats
+            - ./mailgen/templates:/opt/templates
+        ports:
+            - 1380:80
+            - 1381:81
+        networks:
+            - intelmq
+
+    fody:
+        image: skizo16/intelmq-fody:cyberdrill16
+        container_name: intelmq-fody
+        restart: always
+        ports:
+            - 8080:8080
+        depends_on:
+            - fody-backend
+        volumes:
+            - ./fody/startup-spa.sh:/opt/startup-spa.sh
+        networks:
+            - intelmq
+
+    fody-backend:
+        image: skizo16/intelmq-fody-backend:cyberdrill16
+        container_name: intelmq-fody-backend
+        restart: always
+        volumes:
+            - ./fody-backend/conf:/opt/conf
+        depends_on:
+            - database
+        environment:
+            EVENTDB_SERVE_CONF_FILE: "/opt/conf/eventdb.conf"
+            CONTACTDB_SERVE_CONF_FILE: "/opt/conf/contactdb.conf"
+            TICKETS_SERVE_CONF_FILE: "/opt/conf/ticketdb.conf"
+        networks:
+            - intelmq
+        command: ["wait-for-it.sh", "database:5432", "-t", "0", "-s", "--", "hug", "-f", "./intelmq_fody_backend/serve.py", "-p", "8002"]
+
+    database:
+        image: skizo16/intelmq-database:cyberdrill16
+        container_name: intelmq-database
+        restart: always
+        volumes:
+            - ./database/init:/docker-entrypoint-initdb.d
+        environment:
+            POSTGRES_PASSWORD: secret
+        ports:
+            - 1338:5432
+        networks:
+            - intelmq
+        command:
+            - "postgres"
+            - "-c"
+            - "logging_collector=on"
+            - "-c"
+            - "log_destination=stderr"
+            - "-c"
+            - "log_directory=/var/log/postgresql/"
+            - "-c"
+            - "log_statement=all"
+
+    mailgen:
+        image: skizo16/intelmq-mailgen:cyberdrill16
+        container_name: intelmq-mailgen
+        restart: always
+        volumes:
+            - ./mailgen/init:/opt/init
+            - ./mailgen/formats:/opt/formats
+            - ./mailgen/templates:/opt/templates
+        depends_on:
+            - database
+            - dsmtpd
+        networks:
+            - intelmq
+
+    dsmtpd:
+        image: skizo16/intelmq-dsmtpd:cyberdrill16
+        container_name: intelmq-dsmtpd
+        volumes:
+            - ../mails:/opt/mails
+        ports:
+            - 1325:1025
+        networks:
+            - intelmq
+
+    webinput-csv:
+        image: skizo16/intelmq-webinput-csv-spa:cyberdrill16
+        container_name: intelmq-webinput-csv
+        restart: always
+        depends_on:
+            - webinput-csv-backend
+        networks:
+            - intelmq
+
+    webinput-csv-backend:
+        image: skizo16/intelmq-webinput-csv-backend:cyberdrill16
+        container_name: intelmq-webinput-csv-backend
+        restart: always
+        volumes:
+            - ./webinput-csv-backend/conf:/opt/conf
+        depends_on:
+            - intelmq
+        networks:
+            - intelmq
+
+
+networks:
+    intelmq:
+        driver: bridge
